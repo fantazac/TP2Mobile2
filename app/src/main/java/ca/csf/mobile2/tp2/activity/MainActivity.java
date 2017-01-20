@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     protected ObjectMapper objectMapper;
 
     private List<WeatherType> weatherTypes;
+    private int[] weatherColors;
     private int[] weatherXMLs;
 
     protected TextView locationTextView;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         weatherTypes.add(WeatherType.SNOW);
 
         weatherXMLs = new int[]{R.drawable.ic_sunny, R.drawable.ic_cloudy, R.drawable.ic_rain, R.drawable.ic_snow};
+        weatherColors = new int[]{R.color.sunnyBackground, R.color.cloudyBackground, R.color.rainBackground,R.color.snowBackground};
 
         objectMapper = new ObjectMapper();
         objectMapper.addMixIn(WeatherForecastBundle.class, WeatherForecastBundleJsonMixin.class);
@@ -110,8 +112,8 @@ public class MainActivity extends AppCompatActivity {
     @UiThread
     protected void setLocation(WeatherForecastBundle weatherForecastBundle) {
         locationTextView.setText(weatherForecastBundle.getLocationName());
-        System.out.println(weatherTypes.indexOf(weatherForecastBundle.getWeatherForecasts().get(0).getWeather()));
         temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(weatherForecastBundle.getWeatherForecasts().get(0).getWeather())]);
+        findViewById(R.id.rootView).getRootView().setBackgroundColor(getResources().getColor((weatherColors[weatherTypes.indexOf(weatherForecastBundle.getWeatherForecasts().get(0).getWeather())])));
     }
 
 }
