@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     protected TextView locationTextView;
     protected ImageView temperatureIconView;
+    protected View rootView;
+    protected TextView dateTextView;
 
     private WeatherForecastBundleRepository weatherForecastBundleRepository;
 
@@ -84,9 +87,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void injectViews(@ViewById(R.id.locationText) TextView locationTextView,
-                               @ViewById(R.id.temperatureIcon) ImageView temperatureIconView) {
+                               @ViewById(R.id.temperatureIcon) ImageView temperatureIconView,
+                               @ViewById(R.id.dateText) TextView dateTextView) {
+        rootView = findViewById(R.id.rootView).getRootView();
         this.locationTextView = locationTextView;
         this.temperatureIconView = temperatureIconView;
+        this.dateTextView = dateTextView;
     }
 
     @Background
@@ -111,9 +117,10 @@ public class MainActivity extends AppCompatActivity {
 
     @UiThread
     protected void setLocation(WeatherForecastBundle weatherForecastBundle) {
+        WeatherForecast today = weatherForecastBundle.getWeatherForecasts().get(0);
         locationTextView.setText(weatherForecastBundle.getLocationName());
-        temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(weatherForecastBundle.getWeatherForecasts().get(0).getWeather())]);
-        findViewById(R.id.rootView).getRootView().setBackgroundColor(getResources().getColor((weatherColors[weatherTypes.indexOf(weatherForecastBundle.getWeatherForecasts().get(0).getWeather())])));
+        temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(today.getWeather())]);
+        rootView.setBackgroundColor(getResources().getColor((weatherColors[weatherTypes.indexOf(today.getWeather())])));
     }
 
 }
