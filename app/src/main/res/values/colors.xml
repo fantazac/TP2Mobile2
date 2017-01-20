@@ -1,0 +1,10 @@
+<resources>
+    <color name="colorPrimary">#f44336</color>
+    <color name="colorPrimaryDark">#c62828</color>
+    <color name="colorAccent">#ffffff</color>
+
+    <color name="sunnyBackground">#f44336</color>
+    <color name="cloudyBackground">#ef6c00</color>
+    <color name="rainBackground">#673ab7</color>
+    <color name="snowBackground">#2196f3</color>
+</resources>

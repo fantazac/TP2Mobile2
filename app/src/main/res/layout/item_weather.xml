@@ -1,0 +1,35 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
+    tools:showIn="@layout/activity_main">
+
+    <TextView
+        android:id="@+id/itemDateText"
+        android:layout_width="144dp"
+        android:layout_height="24dp"
+        android:drawableEnd="@drawable/ic_sunny"
+        android:drawablePadding="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    <TextView
+        android:id="@+id/temperatureMinText"
+        android:layout_width="72dp"
+        android:layout_height="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/temperatureMaxText"
+        android:drawableStart="@drawable/ic_low_thermometer"/>
+
+    <TextView
+        android:id="@+id/temperatureMaxText"
+        android:layout_width="72dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:drawableStart="@drawable/ic_high_thermometer"/>
+
+</RelativeLayout>
