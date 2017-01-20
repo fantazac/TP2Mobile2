@@ -2,6 +2,7 @@ package ca.csf.mobile2.tp2.activity;
 
 import android.media.Image;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -15,6 +16,8 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import ca.csf.mobile2.tp2.R;
 import ca.csf.mobile2.tp2.math.MathFunction;
@@ -23,6 +26,7 @@ import ca.csf.mobile2.tp2.math.TrapezoidFunction;
 import ca.csf.mobile2.tp2.math.TrapezoidFunctionJsonMixin;
 import ca.csf.mobile2.tp2.meteo.WeatherForecast;
 import ca.csf.mobile2.tp2.meteo.WeatherForecastBundle;
+import ca.csf.mobile2.tp2.meteo.WeatherType;
 import ca.csf.mobile2.tp2.meteo.json.WeatherForecastBundleJsonMixin;
 import ca.csf.mobile2.tp2.meteo.json.WeatherForecastJsonMixin;
 import ca.csf.mobile2.tp2.time.UtcDay;
@@ -37,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
     protected ObjectMapper objectMapper;
 
+    private List<WeatherType> weatherTypes;
+    private int[] weatherXMLs;
+
     protected TextView locationTextView;
     protected ImageView temperatureIconView;
 
@@ -45,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        weatherTypes = new ArrayList<>();
+        weatherTypes.add(WeatherType.SUNNY);
+        weatherTypes.add(WeatherType.CLOUDY);
+        weatherTypes.add(WeatherType.RAIN);
+        weatherTypes.add(WeatherType.SNOW);
+
+        weatherXMLs = new int[]{R.drawable.ic_sunny, R.drawable.ic_cloudy, R.drawable.ic_rain, R.drawable.ic_snow};
 
         objectMapper = new ObjectMapper();
         objectMapper.addMixIn(WeatherForecastBundle.class, WeatherForecastBundleJsonMixin.class);
@@ -95,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
     @UiThread
     protected void setLocation(WeatherForecastBundle weatherForecastBundle) {
         locationTextView.setText(weatherForecastBundle.getLocationName());
-        temperatureIconView.setImageResource(R.drawable.ic_cloudy);
+        System.out.println(weatherTypes.indexOf(weatherForecastBundle.getWeatherForecasts().get(0).getWeather()));
+        temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(weatherForecastBundle.getWeatherForecasts().get(0).getWeather())]);
     }
 
 }
