@@ -2,6 +2,7 @@ package ca.csf.mobile2.tp2.activity;
 
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -25,11 +26,13 @@ import ca.csf.mobile2.tp2.math.MathFunction;
 import ca.csf.mobile2.tp2.math.MathFunctionJsonMixin;
 import ca.csf.mobile2.tp2.math.TrapezoidFunction;
 import ca.csf.mobile2.tp2.math.TrapezoidFunctionJsonMixin;
+import ca.csf.mobile2.tp2.meteo.LiveWeather;
 import ca.csf.mobile2.tp2.meteo.WeatherForecast;
 import ca.csf.mobile2.tp2.meteo.WeatherForecastBundle;
 import ca.csf.mobile2.tp2.meteo.WeatherType;
 import ca.csf.mobile2.tp2.meteo.json.WeatherForecastBundleJsonMixin;
 import ca.csf.mobile2.tp2.meteo.json.WeatherForecastJsonMixin;
+import ca.csf.mobile2.tp2.time.TimedUtcTimeProvider;
 import ca.csf.mobile2.tp2.time.UtcDay;
 import ca.csf.mobile2.tp2.time.UtcDayJsonMixin;
 import retrofit2.Call;
@@ -40,7 +43,12 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
 
+    protected static final int MILLIS_DELAY = 1000;
+
     protected ObjectMapper objectMapper;
+
+    protected LiveWeather liveWeather;
+    protected TimedUtcTimeProvider timedUtcTimeProvider;
 
     private List<WeatherType> weatherTypes;
     private int[] weatherColors;
@@ -117,10 +125,19 @@ public class MainActivity extends AppCompatActivity {
 
     @UiThread
     protected void setLocation(WeatherForecastBundle weatherForecastBundle) {
-        WeatherForecast today = weatherForecastBundle.getWeatherForecasts().get(0);
+        timedUtcTimeProvider = new TimedUtcTimeProvider(new Handler(), MILLIS_DELAY);
+        timedUtcTimeProvider.start();
+        liveWeather = new LiveWeather(weatherForecastBundle, timedUtcTimeProvider);
+        liveWeather.start(new LiveWeather.WeatherListener() {
+            @Override
+            public void onWeatherChanged(LiveWeather eventSource) {
+                temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())]);
+                rootView.setBackgroundColor(getResources().getColor((weatherColors[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())])));
+            }
+        });
         locationTextView.setText(weatherForecastBundle.getLocationName());
-        temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(today.getWeather())]);
-        rootView.setBackgroundColor(getResources().getColor((weatherColors[weatherTypes.indexOf(today.getWeather())])));
+        temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())]);
+        rootView.setBackgroundColor(getResources().getColor((weatherColors[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())])));
     }
 
 }
