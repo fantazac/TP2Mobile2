@@ -18,8 +18,12 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import ca.csf.mobile2.tp2.R;
 import ca.csf.mobile2.tp2.math.MathFunction;
@@ -58,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     protected ImageView temperatureIconView;
     protected View rootView;
     protected TextView dateTextView;
+    protected TextView currentTimeTextView;
+    protected TextView temperatureTextView;
 
     private WeatherForecastBundleRepository weatherForecastBundleRepository;
 
@@ -72,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         weatherTypes.add(WeatherType.SNOW);
 
         weatherXMLs = new int[]{R.drawable.ic_sunny, R.drawable.ic_cloudy, R.drawable.ic_rain, R.drawable.ic_snow};
-        weatherColors = new int[]{R.color.sunnyBackground, R.color.cloudyBackground, R.color.rainBackground,R.color.snowBackground};
+        weatherColors = new int[]{R.color.sunnyBackground, R.color.cloudyBackground, R.color.rainBackground, R.color.snowBackground};
 
         objectMapper = new ObjectMapper();
         objectMapper.addMixIn(WeatherForecastBundle.class, WeatherForecastBundleJsonMixin.class);
@@ -96,11 +102,15 @@ public class MainActivity extends AppCompatActivity {
 
     protected void injectViews(@ViewById(R.id.locationText) TextView locationTextView,
                                @ViewById(R.id.temperatureIcon) ImageView temperatureIconView,
-                               @ViewById(R.id.dateText) TextView dateTextView) {
+                               @ViewById(R.id.dateText) TextView dateTextView,
+                               @ViewById(R.id.currentTimeText) TextView currentTimeTextView,
+                               @ViewById(R.id.temperatureText) TextView temperatureTextView) {
         rootView = findViewById(R.id.rootView).getRootView();
         this.locationTextView = locationTextView;
         this.temperatureIconView = temperatureIconView;
         this.dateTextView = dateTextView;
+        this.currentTimeTextView = currentTimeTextView;
+        this.temperatureTextView = temperatureTextView;
     }
 
     @Background
@@ -136,8 +146,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         locationTextView.setText(weatherForecastBundle.getLocationName());
+        currentTimeTextView.setText(String.valueOf(liveWeather.getCurrentTime()));
         temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())]);
         rootView.setBackgroundColor(getResources().getColor((weatherColors[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())])));
+        List<WeatherForecast> weatherForecasts = weatherForecastBundle.getWeatherForecasts();
+        for (WeatherForecast weatherForecast : weatherForecasts) {
+            if (weatherForecast.canGetTemperatureAt(timedUtcTimeProvider.getCurrentTimeInSeconds())) {
+                currentTimeTextView.setText(getCurrentTime());
+                dateTextView.setText(getCurrentDay());
+                temperatureTextView.setText(String.valueOf(liveWeather.getCurrentTemperatureInCelsius()) + "°C");
+                break;
+            }
+        }
+
+    }
+
+    private String getCurrentTime() {
+
+        TimeZone timeZone = TimeZone.getTimeZone("EST");
+        Calendar calendar = Calendar.getInstance(timeZone);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", Locale.CANADA_FRENCH);
+
+        return simpleDateFormat.format(calendar.getTime());
+    }
+
+    private String getCurrentDay() {
+
+        TimeZone timeZone = TimeZone.getTimeZone("EST");
+        Calendar calendar = Calendar.getInstance(timeZone);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE d MMM yyyy", Locale.FRENCH);
+
+        return simpleDateFormat.format(calendar.getTime());
     }
 
 }
