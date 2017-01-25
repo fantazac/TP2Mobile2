@@ -1,11 +1,10 @@
 package ca.csf.mobile2.tp2.activity;
 
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,10 +19,8 @@ import org.androidannotations.annotations.ViewById;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import ca.csf.mobile2.tp2.R;
 import ca.csf.mobile2.tp2.math.MathFunction;
@@ -48,6 +45,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     protected static final int MILLIS_DELAY = 1000;
+    protected static final int SECONDS_TO_MILLIS = 1000;
 
     protected ObjectMapper objectMapper;
 
@@ -152,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         List<WeatherForecast> weatherForecasts = weatherForecastBundle.getWeatherForecasts();
         for (WeatherForecast weatherForecast : weatherForecasts) {
             if (weatherForecast.canGetTemperatureAt(timedUtcTimeProvider.getCurrentTimeInSeconds())) {
-                currentTimeTextView.setText(getCurrentTime());
+                currentTimeTextView.setText(getCurrentTime(timedUtcTimeProvider));
                 dateTextView.setText(getCurrentDay());
                 temperatureTextView.setText(String.valueOf(liveWeather.getCurrentTemperatureInCelsius()) + "°C");
                 break;
@@ -161,22 +159,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private String getCurrentTime() {
+    private String getCurrentTime(TimedUtcTimeProvider timedUtcTimeProvider) {
 
-        TimeZone timeZone = TimeZone.getTimeZone("EST");
-        Calendar calendar = Calendar.getInstance(timeZone);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", Locale.CANADA_FRENCH);
+        Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", dateTextView.getTextLocale());
 
-        return simpleDateFormat.format(calendar.getTime());
+        return simpleDateFormat.format(date);
     }
 
     private String getCurrentDay() {
 
-        TimeZone timeZone = TimeZone.getTimeZone("EST");
-        Calendar calendar = Calendar.getInstance(timeZone);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE d MMM yyyy", Locale.FRENCH);
+        Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
+        java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(this);
 
-        return simpleDateFormat.format(calendar.getTime());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
+        String dayOfTheWeek = simpleDateFormat.format(date);
+        dayOfTheWeek = dayOfTheWeek.substring(0, 1).toUpperCase() + dayOfTheWeek.substring(1);
+
+        return dayOfTheWeek + ", " + dateFormat.format(date);
     }
 
 }
