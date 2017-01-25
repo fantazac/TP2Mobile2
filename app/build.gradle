@@ -31,6 +31,9 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    dataBinding {
+        enabled = true
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -54,7 +57,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 
-    compile 'ca.acodebreak:android-databind-list:1.0.2'
+    compile 'ca.acodebreak:android-databind-list:1.1.0'
 
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
 
