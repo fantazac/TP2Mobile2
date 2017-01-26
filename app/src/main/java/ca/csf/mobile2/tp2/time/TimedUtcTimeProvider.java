@@ -52,7 +52,7 @@ public class TimedUtcTimeProvider implements UtcTimeProvider {
     @Override
     public void addTimeListener(TimeListener timeListener) {
         timeListeners.add(timeListener);
-    }
+}
 
     @Override
     public void removeTimeListener(TimeListener timeListener) {
