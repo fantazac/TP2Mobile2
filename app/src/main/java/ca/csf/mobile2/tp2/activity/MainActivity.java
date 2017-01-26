@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             Response<WeatherForecastBundle> response = call.execute();
             if (response.isSuccessful()) {
                 WeatherForecastBundle weatherForecastBundle = response.body();
-                setLocation(weatherForecastBundle);
+                setInterface(weatherForecastBundle);
             } else {
 
                 //Handle error
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @UiThread
-    protected void setLocation(WeatherForecastBundle weatherForecastBundle) {
+    protected void setInterface(WeatherForecastBundle weatherForecastBundle) {
         timedUtcTimeProvider = new TimedUtcTimeProvider(new Handler(), MILLIS_DELAY);
         timedUtcTimeProvider.start();
         liveWeather = new LiveWeather(weatherForecastBundle, timedUtcTimeProvider);
@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-
     }
 
     private String getCurrentTime(TimedUtcTimeProvider timedUtcTimeProvider) {
@@ -176,7 +175,13 @@ public class MainActivity extends AppCompatActivity {
         String dayOfTheWeek = simpleDateFormat.format(date);
         dayOfTheWeek = dayOfTheWeek.substring(0, 1).toUpperCase() + dayOfTheWeek.substring(1);
 
-        return dayOfTheWeek + ", " + dateFormat.format(date);
+        String restOfDate = dateFormat.format(date);
+        int indexOfFirstLetterOfMonth = restOfDate.indexOf(' ') + 1;
+        restOfDate = restOfDate.substring(0, indexOfFirstLetterOfMonth) +
+                restOfDate.substring(indexOfFirstLetterOfMonth, indexOfFirstLetterOfMonth+1).toUpperCase() +
+                restOfDate.substring(indexOfFirstLetterOfMonth+1);
+
+        return dayOfTheWeek + ", " + restOfDate;
     }
 
 }
