@@ -1,35 +1,47 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="8dp"
-    android:paddingTop="8dp"
-    tools:showIn="@layout/activity_main">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/itemDateText"
-        android:layout_width="144dp"
-        android:layout_height="24dp"
-        android:drawableEnd="@drawable/ic_sunny"
-        android:drawablePadding="16dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+    <data>
+        <variable
+            name="forecast"
+            type="ca.csf.mobile2.tp2.ViewModel.WeatherForecastViewModel" />
+    </data>
 
-    <TextView
-        android:id="@+id/temperatureMinText"
-        android:layout_width="72dp"
-        android:layout_height="24dp"
-        android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/temperatureMaxText"
-        android:drawableStart="@drawable/ic_low_thermometer"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:id="@+id/temperatureMaxText"
-        android:layout_width="72dp"
-        android:layout_height="24dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:drawableStart="@drawable/ic_high_thermometer"/>
+        <TextView
+            android:id="@+id/itemDateText"
+            android:layout_width="144dp"
+            android:layout_height="24dp"
+            android:drawableEnd="@drawable/ic_sunny"
+            android:drawablePadding="16dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@{forecast.utcDay.toString()}" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/temperatureMinText"
+            android:layout_width="72dp"
+            android:layout_height="24dp"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/temperatureMaxText"
+            android:drawableStart="@drawable/ic_low_thermometer"
+            android:text="Min temp." />
+
+        <TextView
+            android:id="@+id/temperatureMaxText"
+            android:layout_width="72dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:drawableStart="@drawable/ic_high_thermometer"
+            android:text="Max temp." />
+
+    </RelativeLayout>
+
+</layout>

@@ -23,7 +23,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ca.csf.mobile2.tp2.BR;
 import ca.csf.mobile2.tp2.R;
+import ca.csf.mobile2.tp2.ViewModel.WeatherForecastBundleViewModel;
+import ca.csf.mobile2.tp2.databinding.ActivityMainBinding;
 import ca.csf.mobile2.tp2.math.MathFunction;
 import ca.csf.mobile2.tp2.math.MathFunctionJsonMixin;
 import ca.csf.mobile2.tp2.math.TrapezoidFunction;
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     protected TextView temperatureTextView;
 
     private List<WeatherForecast> weatherForecasts;
+    private WeatherForecastBundle weatherForecastBundle;
 
     private WeatherForecastBundleRepository weatherForecastBundleRepository;
 
@@ -107,7 +111,13 @@ public class MainActivity extends AppCompatActivity {
                                @ViewById(R.id.dateText) TextView dateTextView,
                                @ViewById(R.id.currentTimeText) TextView currentTimeTextView,
                                @ViewById(R.id.temperatureText) TextView temperatureTextView) {
-        rootView = findViewById(R.id.rootView).getRootView();
+        rootView = findViewById(R.id.rootView);
+
+        ActivityMainBinding binding = ActivityMainBinding.bind(rootView);
+        binding.setForecastBundle(new WeatherForecastBundleViewModel(weatherForecastBundle));
+        binding.setForecastLayoutId(R.layout.item_weather);
+        binding.setForecastLayoutVariableId(BR.weather);
+
         this.locationTextView = locationTextView;
         this.temperatureIconView = temperatureIconView;
         this.dateTextView = dateTextView;
@@ -122,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
         try {
             Response<WeatherForecastBundle> response = call.execute();
             if (response.isSuccessful()) {
-                WeatherForecastBundle weatherForecastBundle = response.body();
-                setInterface(weatherForecastBundle);
+                weatherForecastBundle = response.body();
+                setInterface();
             } else {
 
                 //Handle error
@@ -136,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @UiThread
-    protected void setInterface(WeatherForecastBundle weatherForecastBundle) {
+    protected void setInterface() {
         weatherForecasts = weatherForecastBundle.getWeatherForecasts();
         timedUtcTimeProvider = new TimedUtcTimeProvider(new Handler(), MILLIS_DELAY);
         timedUtcTimeProvider.start();
