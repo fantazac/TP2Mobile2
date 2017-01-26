@@ -1,5 +1,6 @@
 package ca.csf.mobile2.tp2.activity;
 
+import android.animation.TimeAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -36,6 +37,7 @@ import ca.csf.mobile2.tp2.meteo.json.WeatherForecastJsonMixin;
 import ca.csf.mobile2.tp2.time.TimedUtcTimeProvider;
 import ca.csf.mobile2.tp2.time.UtcDay;
 import ca.csf.mobile2.tp2.time.UtcDayJsonMixin;
+import ca.csf.mobile2.tp2.time.UtcTimeProvider;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -62,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     protected TextView dateTextView;
     protected TextView currentTimeTextView;
     protected TextView temperatureTextView;
+
+    private List<WeatherForecast> weatherForecasts;
 
     private WeatherForecastBundleRepository weatherForecastBundleRepository;
 
@@ -119,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             Response<WeatherForecastBundle> response = call.execute();
             if (response.isSuccessful()) {
                 WeatherForecastBundle weatherForecastBundle = response.body();
-                setLocation(weatherForecastBundle);
+                setInterface(weatherForecastBundle);
             } else {
 
                 //Handle error
@@ -132,9 +136,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @UiThread
-    protected void setLocation(WeatherForecastBundle weatherForecastBundle) {
+    protected void setInterface(WeatherForecastBundle weatherForecastBundle) {
+        weatherForecasts = weatherForecastBundle.getWeatherForecasts();
         timedUtcTimeProvider = new TimedUtcTimeProvider(new Handler(), MILLIS_DELAY);
         timedUtcTimeProvider.start();
+        timedUtcTimeProvider.addTimeListener(new UtcTimeProvider.TimeListener() {
+            @Override
+            public void onTimeChanged(UtcTimeProvider eventSource) {
+                UpdateView();
+            }
+        });
         liveWeather = new LiveWeather(weatherForecastBundle, timedUtcTimeProvider);
         liveWeather.start(new LiveWeather.WeatherListener() {
             @Override
@@ -144,10 +155,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         locationTextView.setText(weatherForecastBundle.getLocationName());
-        currentTimeTextView.setText(String.valueOf(liveWeather.getCurrentTime()));
         temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())]);
         rootView.setBackgroundColor(getResources().getColor((weatherColors[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())])));
-        List<WeatherForecast> weatherForecasts = weatherForecastBundle.getWeatherForecasts();
+        UpdateView();
+    }
+
+    private void UpdateView(){
         for (WeatherForecast weatherForecast : weatherForecasts) {
             if (weatherForecast.canGetTemperatureAt(timedUtcTimeProvider.getCurrentTimeInSeconds())) {
                 currentTimeTextView.setText(getCurrentTime(timedUtcTimeProvider));
@@ -156,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-
     }
 
     private String getCurrentTime(TimedUtcTimeProvider timedUtcTimeProvider) {
@@ -176,7 +188,13 @@ public class MainActivity extends AppCompatActivity {
         String dayOfTheWeek = simpleDateFormat.format(date);
         dayOfTheWeek = dayOfTheWeek.substring(0, 1).toUpperCase() + dayOfTheWeek.substring(1);
 
-        return dayOfTheWeek + ", " + dateFormat.format(date);
+        String restOfDate = dateFormat.format(date);
+        int indexOfFirstLetterOfMonth = restOfDate.indexOf(' ') + 1;
+        restOfDate = restOfDate.substring(0, indexOfFirstLetterOfMonth) +
+                restOfDate.substring(indexOfFirstLetterOfMonth, indexOfFirstLetterOfMonth+1).toUpperCase() +
+                restOfDate.substring(indexOfFirstLetterOfMonth+1);
+
+        return dayOfTheWeek + ", " + restOfDate;
     }
 
 }
