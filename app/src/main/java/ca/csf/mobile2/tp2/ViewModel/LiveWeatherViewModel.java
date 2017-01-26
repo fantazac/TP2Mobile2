@@ -22,6 +22,6 @@ public class LiveWeatherViewModel extends BaseObservable implements LiveWeather.
 
     @Override
     public void onWeatherChanged(LiveWeather eventSource) {
-        //notifyPropertyChanged(BR.);
+        notifyPropertyChanged(BR.weather);
     }
 }

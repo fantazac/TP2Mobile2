@@ -24,25 +24,20 @@ public class TrapezoidFunction implements MathFunction {
         long variation = maxValue - minValue;
 
         if (value < xStartMin) {
-            System.out.println(minValue);
             return minValue;
         }
         else if (value < xStartMax) {
             float interpolationFactor = (float)(value - xStartMin) / (float)(xStartMax - xStartMin);
-            System.out.println(minValue + (int)(variation * interpolationFactor));
             return minValue + (int)(variation * interpolationFactor);
         }
         else if (value < xEndMax) {
-            System.out.println(maxValue);
             return maxValue;
         }
         else if (value < xEndMin) {
             float interpolationFactor = (float)(xEndMin - value) / (float)(xEndMin - xEndMax);
-            System.out.println(minValue + (int)(variation * interpolationFactor));
             return minValue + (int)(variation * interpolationFactor);
         }
         else {
-            System.out.println(minValue);
             return minValue;
         }
     }

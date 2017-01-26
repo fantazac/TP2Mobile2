@@ -80,9 +80,7 @@ public class TimedUtcTimeProvider implements UtcTimeProvider {
     private class TimeHandlerListener implements Runnable {
 
         @Override
-        public void run() {
-            TimedUtcTimeProvider.this.onTimeChanged();
-        }
+        public void run() { TimedUtcTimeProvider.this.onTimeChanged(); }
     }
     //END Remove this when DataBinding will be supported by Jack and Java 8 is enabled
 
