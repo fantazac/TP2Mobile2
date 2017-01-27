@@ -113,11 +113,6 @@ public class MainActivity extends AppCompatActivity {
                                @ViewById(R.id.temperatureText) TextView temperatureTextView) {
         rootView = findViewById(R.id.rootView);
 
-        ActivityMainBinding binding = ActivityMainBinding.bind(rootView);
-        binding.setForecastBundle(new WeatherForecastBundleViewModel(weatherForecastBundle));
-        binding.setForecastLayoutId(R.layout.item_weather);
-        binding.setForecastLayoutVariableId(BR.weather);
-
         this.locationTextView = locationTextView;
         this.temperatureIconView = temperatureIconView;
         this.dateTextView = dateTextView;
@@ -147,6 +142,11 @@ public class MainActivity extends AppCompatActivity {
 
     @UiThread
     protected void setInterface() {
+        ActivityMainBinding binding = ActivityMainBinding.bind(rootView);
+        binding.setForecastBundle(new WeatherForecastBundleViewModel(weatherForecastBundle));
+        binding.setForecastLayoutId(R.layout.item_weather);
+        binding.setForecastLayoutVariableId(BR.forecast);
+
         weatherForecasts = weatherForecastBundle.getWeatherForecasts();
         timedUtcTimeProvider = new TimedUtcTimeProvider(new Handler(), MILLIS_DELAY);
         timedUtcTimeProvider.start();

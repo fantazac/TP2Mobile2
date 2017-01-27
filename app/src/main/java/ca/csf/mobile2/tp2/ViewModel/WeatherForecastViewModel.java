@@ -29,7 +29,7 @@ public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForec
     @Bindable
     public MathFunction getTemperatureAccordingToUtcTimeFunction() {
         return weatherForecast.getTemperatureAccordingToUtcTimeFunction();
-    }
+    } 
 
     @Override
     public WeatherForecast getModelObject() {
