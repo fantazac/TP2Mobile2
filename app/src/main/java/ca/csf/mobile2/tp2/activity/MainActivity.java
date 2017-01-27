@@ -179,11 +179,18 @@ public class MainActivity extends AppCompatActivity {
         return simpleDateFormat.format(date);
     }
 
+    public String getCurrentDay() {
+        Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
+        java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(this);
+
+        return WeatherForecastViewModel.getCurrentDay(dateFormat, date);
+    }
+
     private void UpdateView(){
         for (WeatherForecast weatherForecast : weatherForecasts) {
             if (weatherForecast.canGetTemperatureAt(timedUtcTimeProvider.getCurrentTimeInSeconds())) {
                 currentTimeTextView.setText(getCurrentTime(timedUtcTimeProvider));
-                dateTextView.setText(WeatherForecastViewModel.getCurrentDay(timedUtcTimeProvider));
+                dateTextView.setText(getCurrentDay());
                 temperatureTextView.setText(String.valueOf(liveWeather.getCurrentTemperatureInCelsius()) + "°C");
                 break;
             }

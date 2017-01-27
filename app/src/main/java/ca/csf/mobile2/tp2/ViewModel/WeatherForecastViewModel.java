@@ -63,10 +63,7 @@ public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForec
 
     }
 
-    public static String getCurrentDay(TimedUtcTimeProvider timedUtcTimeProvider, MainActivity_ mainActivity_) {
-
-        Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
-        java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(mainActivity_);
+    public static String getCurrentDay(java.text.DateFormat dateFormat, Date date) {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE");
         String dayOfTheWeek = simpleDateFormat.format(date);
