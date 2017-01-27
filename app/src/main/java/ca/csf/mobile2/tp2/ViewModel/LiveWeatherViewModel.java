@@ -6,6 +6,7 @@ import android.databinding.BindingAdapter;
 
 import ca.csf.mobile2.tp2.BR;
 import ca.csf.mobile2.tp2.meteo.LiveWeather;
+import ca.csf.mobile2.tp2.meteo.WeatherType;
 
 public class LiveWeatherViewModel extends BaseObservable implements LiveWeather.WeatherListener {
 
@@ -18,6 +19,16 @@ public class LiveWeatherViewModel extends BaseObservable implements LiveWeather.
     @Bindable
     public int getCurrentTemperatureInCelsius() {
         return liveWeather.getCurrentTemperatureInCelsius();
+    }
+
+    @Bindable
+    public long getCurrentTime() {
+        return liveWeather.getCurrentTime();
+    }
+
+    @Bindable
+    public WeatherType getCurrentWeatherType() {
+        return liveWeather.getCurrentWeatherType();
     }
 
     @Override

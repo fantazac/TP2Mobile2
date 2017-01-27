@@ -5,6 +5,10 @@
 
     <data>
         <variable
+            name="liveWeather"
+            type="ca.csf.mobile2.tp2.ViewModel.LiveWeatherViewModel" />
+
+        <variable
             name="forecastBundle"
             type="ca.csf.mobile2.tp2.ViewModel.WeatherForecastBundleViewModel" />
         <variable
