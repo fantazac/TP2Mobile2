@@ -22,7 +22,7 @@
             android:drawableEnd="@drawable/ic_sunny"
             android:drawablePadding="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="DAY" />
+            android:text="@{forecast.getDayOfTheWeek(forecast.getDate())}" />
 
         <TextView
             android:id="@+id/temperatureMinText"
@@ -31,7 +31,7 @@
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@+id/temperatureMaxText"
             android:drawableStart="@drawable/ic_low_thermometer"
-            android:text="MIN" />
+            android:text="@{String.valueOf(forecast.getMinimumAndMaximumTemperaturesForDay()[0])}" />
 
         <TextView
             android:id="@+id/temperatureMaxText"
@@ -40,7 +40,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:drawableStart="@drawable/ic_high_thermometer"
-            android:text="MAX" />
+            android:text="@{String.valueOf(forecast.getMinimumAndMaximumTemperaturesForDay()[1])}" />
 
     </RelativeLayout>
 

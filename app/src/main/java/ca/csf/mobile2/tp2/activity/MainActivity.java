@@ -20,6 +20,7 @@ import org.androidannotations.annotations.ViewById;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -180,10 +181,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String getCurrentDay() {
-        Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
+        Date date = new Date(Calendar.getInstance().getTimeInMillis());
         java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(this);
 
-        return WeatherForecastViewModel.getCurrentDay(dateFormat, date);
+        String restOfDate = dateFormat.format(date);
+        int indexOfFirstLetterOfMonth = restOfDate.indexOf(' ') + 1;
+        restOfDate = restOfDate.substring(0, indexOfFirstLetterOfMonth) +
+                restOfDate.substring(indexOfFirstLetterOfMonth, indexOfFirstLetterOfMonth+1).toUpperCase() +
+                restOfDate.substring(indexOfFirstLetterOfMonth+1);
+
+        return (new WeatherForecastViewModel(weatherForecasts.get(0))).getDayOfTheWeek(date) + ", " + restOfDate;
     }
 
     private void UpdateView(){

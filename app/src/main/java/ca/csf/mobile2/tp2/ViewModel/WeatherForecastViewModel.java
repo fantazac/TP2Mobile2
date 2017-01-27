@@ -5,6 +5,7 @@ import android.text.format.DateFormat;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import ca.acodebreak.android.databind.list.DatabindableViewModel;
@@ -41,13 +42,13 @@ public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForec
         return weatherForecast.getTemperatureAccordingToUtcTimeFunction();
     }
 
-    public int[] getMinimumAndMaximumTemperaturesForDay(TimedUtcTimeProvider timedUtcTimeProvider){
+    public int[] getMinimumAndMaximumTemperaturesForDay(){
         int minimum = 100;
         int maximum = -100;
 
         int temperatureAtUtcTime;
 
-        long utcTimeAtMidnight = timedUtcTimeProvider.getCurrentTimeInSeconds() / 60 / 60 / 24 * 60 * 60 * 24;
+        long utcTimeAtMidnight = weatherForecast.getUtcDay().getUtcDayTime();
 
         for(int i = 0; i < 24; i++){
             temperatureAtUtcTime = weatherForecast.getTemperatureAt(utcTimeAtMidnight + i * 3600);
@@ -63,19 +64,15 @@ public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForec
 
     }
 
-    public static String getCurrentDay(java.text.DateFormat dateFormat, Date date) {
+    public Date getDate() {
+        return new Date(getUtcDay().getUtcDayTime() * SECONDS_TO_MILLIS);
+    }
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE");
+    public String getDayOfTheWeek(Date date) {
+        date = new Date(date.getTime() - Calendar.getInstance().getTimeZone().getOffset(Calendar.getInstance().getTimeInMillis()));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
         String dayOfTheWeek = simpleDateFormat.format(date);
-        dayOfTheWeek = dayOfTheWeek.substring(0, 1).toUpperCase() + dayOfTheWeek.substring(1);
-
-        String restOfDate = dateFormat.format(date);
-        int indexOfFirstLetterOfMonth = restOfDate.indexOf(' ') + 1;
-        restOfDate = restOfDate.substring(0, indexOfFirstLetterOfMonth) +
-                restOfDate.substring(indexOfFirstLetterOfMonth, indexOfFirstLetterOfMonth+1).toUpperCase() +
-                restOfDate.substring(indexOfFirstLetterOfMonth+1);
-
-        return dayOfTheWeek + ", " + restOfDate;
+        return dayOfTheWeek.substring(0, 1).toUpperCase() + dayOfTheWeek.substring(1);
     }
 
     @Override
