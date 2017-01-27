@@ -50,7 +50,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     protected static final int MILLIS_DELAY = 1000;
-    protected static final int SECONDS_TO_MILLIS = 1000;
 
     protected ObjectMapper objectMapper;
 
@@ -179,32 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-    }
-
-    private String getCurrentTime(TimedUtcTimeProvider timedUtcTimeProvider) {
-
-        Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", dateTextView.getTextLocale());
-
-        return simpleDateFormat.format(date);
-    }
-
-    private String getCurrentDay() {
-
-        Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
-        java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(this);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
-        String dayOfTheWeek = simpleDateFormat.format(date);
-        dayOfTheWeek = dayOfTheWeek.substring(0, 1).toUpperCase() + dayOfTheWeek.substring(1);
-
-        String restOfDate = dateFormat.format(date);
-        int indexOfFirstLetterOfMonth = restOfDate.indexOf(' ') + 1;
-        restOfDate = restOfDate.substring(0, indexOfFirstLetterOfMonth) +
-                restOfDate.substring(indexOfFirstLetterOfMonth, indexOfFirstLetterOfMonth+1).toUpperCase() +
-                restOfDate.substring(indexOfFirstLetterOfMonth+1);
-
-        return dayOfTheWeek + ", " + restOfDate;
     }
 
 }
