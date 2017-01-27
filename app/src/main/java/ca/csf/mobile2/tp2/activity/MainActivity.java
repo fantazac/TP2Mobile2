@@ -26,6 +26,7 @@ import java.util.List;
 import ca.csf.mobile2.tp2.BR;
 import ca.csf.mobile2.tp2.R;
 import ca.csf.mobile2.tp2.ViewModel.WeatherForecastBundleViewModel;
+import ca.csf.mobile2.tp2.ViewModel.WeatherForecastViewModel;
 import ca.csf.mobile2.tp2.databinding.ActivityMainBinding;
 import ca.csf.mobile2.tp2.math.MathFunction;
 import ca.csf.mobile2.tp2.math.MathFunctionJsonMixin;
@@ -49,6 +50,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
 
+    public static final int SECONDS_TO_MILLIS = 1000;
     protected static final int MILLIS_DELAY = 1000;
 
     protected ObjectMapper objectMapper;
@@ -169,11 +171,19 @@ public class MainActivity extends AppCompatActivity {
         UpdateView();
     }
 
+    public String getCurrentTime(TimedUtcTimeProvider timedUtcTimeProvider) {
+
+        Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", dateTextView.getTextLocale());
+
+        return simpleDateFormat.format(date);
+    }
+
     private void UpdateView(){
         for (WeatherForecast weatherForecast : weatherForecasts) {
             if (weatherForecast.canGetTemperatureAt(timedUtcTimeProvider.getCurrentTimeInSeconds())) {
                 currentTimeTextView.setText(getCurrentTime(timedUtcTimeProvider));
-                dateTextView.setText(getCurrentDay());
+                dateTextView.setText(WeatherForecastViewModel.getCurrentDay(timedUtcTimeProvider));
                 temperatureTextView.setText(String.valueOf(liveWeather.getCurrentTemperatureInCelsius()) + "°C");
                 break;
             }

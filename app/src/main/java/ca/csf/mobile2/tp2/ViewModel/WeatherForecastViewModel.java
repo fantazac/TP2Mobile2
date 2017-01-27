@@ -63,15 +63,7 @@ public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForec
 
     }
 
-    public String getCurrentTime(TimedUtcTimeProvider timedUtcTimeProvider, TextView dateTextView) {
-
-        Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", dateTextView.getTextLocale());
-
-        return simpleDateFormat.format(date);
-    }
-
-    public String getCurrentDay(TimedUtcTimeProvider timedUtcTimeProvider, MainActivity_ mainActivity_) {
+    public static String getCurrentDay(TimedUtcTimeProvider timedUtcTimeProvider, MainActivity_ mainActivity_) {
 
         Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
         java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(mainActivity_);
