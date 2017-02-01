@@ -24,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:background="@color/sunnyBackground"
+        app:backgroundColor="@{liveWeather.currentWeatherType}"
         tools:context="ca.csf.mobile2.tp2.activity.MainActivity">
 
         <ImageView
@@ -41,7 +42,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/locationText"
             app:layout_constraintVertical_bias="0.1"
-            tools:src="@drawable/ic_sunny" />
+            tools:src="@drawable/ic_sunny"
+            app:weatherType="@{liveWeather.currentWeatherType}"/>
 
         <TextView
             android:id="@+id/temperatureText"
@@ -54,7 +56,7 @@
             app:layout_constraintLeft_toRightOf="@+id/temperatureIcon"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/temperatureIcon"
-            tools:text="7°C" />
+            tools:text="@{liveWeather.currentTemperatureString}" />
 
         <TextView
             android:id="@+id/currentTimeText"

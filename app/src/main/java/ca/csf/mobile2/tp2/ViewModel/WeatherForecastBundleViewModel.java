@@ -1,7 +1,5 @@
 package ca.csf.mobile2.tp2.ViewModel;
 
-import android.databinding.BaseObservable;
-
 import ca.acodebreak.android.databind.list.DatabindableViewModel;
 import ca.acodebreak.android.databind.list.DatabindableViewModelList;
 import ca.csf.mobile2.tp2.meteo.WeatherForecast;

@@ -1,7 +1,7 @@
 package ca.csf.mobile2.tp2.ViewModel;
 
 import android.databinding.Bindable;
-import android.text.format.DateFormat;
+import android.databinding.BindingAdapter;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -9,12 +9,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import ca.acodebreak.android.databind.list.DatabindableViewModel;
-import ca.csf.mobile2.tp2.activity.MainActivity;
-import ca.csf.mobile2.tp2.activity.MainActivity_;
+import ca.csf.mobile2.tp2.R;
 import ca.csf.mobile2.tp2.math.MathFunction;
 import ca.csf.mobile2.tp2.meteo.WeatherForecast;
 import ca.csf.mobile2.tp2.meteo.WeatherType;
-import ca.csf.mobile2.tp2.time.TimedUtcTimeProvider;
 import ca.csf.mobile2.tp2.time.UtcDay;
 
 public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForecast> {
@@ -73,6 +71,24 @@ public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForec
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
         String dayOfTheWeek = simpleDateFormat.format(date);
         return dayOfTheWeek.substring(0, 1).toUpperCase() + dayOfTheWeek.substring(1);
+    }
+
+    @BindingAdapter("weatherType")
+    public static void bindWeatherTypeToDrawable(TextView textView, WeatherType weatherType) {
+        switch(weatherType) {
+            case SUNNY:
+                textView.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_sunny, 0);
+                break;
+            case CLOUDY:
+                textView.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_cloudy, 0);
+                break;
+            case RAIN:
+                textView.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_rain, 0);
+                break;
+            case SNOW:
+                textView.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_snow, 0);
+                break;
+        }
     }
 
     @Override

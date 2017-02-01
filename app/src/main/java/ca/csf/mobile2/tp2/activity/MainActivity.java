@@ -1,13 +1,10 @@
 package ca.csf.mobile2.tp2.activity;
-
-import android.animation.TimeAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +23,7 @@ import java.util.List;
 
 import ca.csf.mobile2.tp2.BR;
 import ca.csf.mobile2.tp2.R;
+import ca.csf.mobile2.tp2.ViewModel.LiveWeatherViewModel;
 import ca.csf.mobile2.tp2.ViewModel.WeatherForecastBundleViewModel;
 import ca.csf.mobile2.tp2.ViewModel.WeatherForecastViewModel;
 import ca.csf.mobile2.tp2.databinding.ActivityMainBinding;
@@ -57,18 +55,15 @@ public class MainActivity extends AppCompatActivity {
     protected ObjectMapper objectMapper;
 
     protected LiveWeather liveWeather;
+    private LiveWeatherViewModel liveWeatherViewModel;
     protected TimedUtcTimeProvider timedUtcTimeProvider;
 
     private List<WeatherType> weatherTypes;
-    private int[] weatherColors;
-    private int[] weatherXMLs;
 
     protected TextView locationTextView;
-    protected ImageView temperatureIconView;
     protected View rootView;
     protected TextView dateTextView;
     protected TextView currentTimeTextView;
-    protected TextView temperatureTextView;
 
     private List<WeatherForecast> weatherForecasts;
     private WeatherForecastBundle weatherForecastBundle;
@@ -84,9 +79,6 @@ public class MainActivity extends AppCompatActivity {
         weatherTypes.add(WeatherType.CLOUDY);
         weatherTypes.add(WeatherType.RAIN);
         weatherTypes.add(WeatherType.SNOW);
-
-        weatherXMLs = new int[]{R.drawable.ic_sunny, R.drawable.ic_cloudy, R.drawable.ic_rain, R.drawable.ic_snow};
-        weatherColors = new int[]{R.color.sunnyBackground, R.color.cloudyBackground, R.color.rainBackground, R.color.snowBackground};
 
         objectMapper = new ObjectMapper();
         objectMapper.addMixIn(WeatherForecastBundle.class, WeatherForecastBundleJsonMixin.class);
@@ -109,17 +101,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void injectViews(@ViewById(R.id.locationText) TextView locationTextView,
-                               @ViewById(R.id.temperatureIcon) ImageView temperatureIconView,
                                @ViewById(R.id.dateText) TextView dateTextView,
-                               @ViewById(R.id.currentTimeText) TextView currentTimeTextView,
-                               @ViewById(R.id.temperatureText) TextView temperatureTextView) {
+                               @ViewById(R.id.currentTimeText) TextView currentTimeTextView) {
         rootView = findViewById(R.id.rootView);
 
         this.locationTextView = locationTextView;
-        this.temperatureIconView = temperatureIconView;
         this.dateTextView = dateTextView;
         this.currentTimeTextView = currentTimeTextView;
-        this.temperatureTextView = temperatureTextView;
     }
 
     @Background
@@ -145,9 +133,6 @@ public class MainActivity extends AppCompatActivity {
     @UiThread
     protected void setInterface() {
         ActivityMainBinding binding = ActivityMainBinding.bind(rootView);
-        binding.setForecastBundle(new WeatherForecastBundleViewModel(weatherForecastBundle));
-        binding.setForecastLayoutId(R.layout.item_weather);
-        binding.setForecastLayoutVariableId(BR.forecast);
 
         weatherForecasts = weatherForecastBundle.getWeatherForecasts();
         timedUtcTimeProvider = new TimedUtcTimeProvider(new Handler(), MILLIS_DELAY);
@@ -158,26 +143,26 @@ public class MainActivity extends AppCompatActivity {
                 UpdateView();
             }
         });
+
         liveWeather = new LiveWeather(weatherForecastBundle, timedUtcTimeProvider);
-        liveWeather.start(new LiveWeather.WeatherListener() {
-            @Override
-            public void onWeatherChanged(LiveWeather eventSource) {
-                temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())]);
-                rootView.setBackgroundColor(getResources().getColor((weatherColors[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())])));
-            }
-        });
+        liveWeatherViewModel = new LiveWeatherViewModel(liveWeather);
+
         locationTextView.setText(weatherForecastBundle.getLocationName());
-        temperatureIconView.setImageResource(weatherXMLs[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())]);
-        rootView.setBackgroundColor(getResources().getColor((weatherColors[weatherTypes.indexOf(liveWeather.getCurrentWeatherType())])));
+
+        binding.setLiveWeather(new LiveWeatherViewModel(liveWeather));
+        binding.setForecastBundle(new WeatherForecastBundleViewModel(weatherForecastBundle));
+        binding.setForecastLayoutId(R.layout.item_weather);
+        binding.setForecastLayoutVariableId(BR.forecast);
+
         UpdateView();
     }
 
     public String getCurrentTime(TimedUtcTimeProvider timedUtcTimeProvider) {
-
         Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", dateTextView.getTextLocale());
 
         return simpleDateFormat.format(date);
+
     }
 
     public String getCurrentDay() {
@@ -198,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             if (weatherForecast.canGetTemperatureAt(timedUtcTimeProvider.getCurrentTimeInSeconds())) {
                 currentTimeTextView.setText(getCurrentTime(timedUtcTimeProvider));
                 dateTextView.setText(getCurrentDay());
-                temperatureTextView.setText(String.valueOf(liveWeather.getCurrentTemperatureInCelsius()) + "°C");
+                //temperatureTextView.setText(String.valueOf(liveWeather.getCurrentTemperatureInCelsius()) + "°C");
                 break;
             }
         }

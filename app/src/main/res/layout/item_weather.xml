@@ -22,7 +22,8 @@
             android:drawableEnd="@drawable/ic_sunny"
             android:drawablePadding="16dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:text="@{forecast.getDayOfTheWeek(forecast.getDate())}" />
+            android:text="@{forecast.getDayOfTheWeek(forecast.getDate())}"
+            app:weatherType="@{forecast.weather}"/>
 
         <TextView
             android:id="@+id/temperatureMinText"
