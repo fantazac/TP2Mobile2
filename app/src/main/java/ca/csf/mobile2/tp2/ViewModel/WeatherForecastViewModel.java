@@ -35,11 +35,6 @@ public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForec
         return weatherForecast.getWeather();
     }
 
-    @Bindable
-    public MathFunction getTemperatureAccordingToUtcTimeFunction() {
-        return weatherForecast.getTemperatureAccordingToUtcTimeFunction();
-    }
-
     public int[] getMinimumAndMaximumTemperaturesForDay(){
         int minimum = 100;
         int maximum = -100;

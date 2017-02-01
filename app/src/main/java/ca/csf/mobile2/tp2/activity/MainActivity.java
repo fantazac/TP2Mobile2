@@ -54,8 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
     protected ObjectMapper objectMapper;
 
-    protected LiveWeather liveWeather;
-    private LiveWeatherViewModel liveWeatherViewModel;
     protected TimedUtcTimeProvider timedUtcTimeProvider;
 
     private List<WeatherType> weatherTypes;
@@ -94,9 +92,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //isCounting = true;
-
-        //countUpIndefinitely();
         getWeatherForecastBundle();
     }
 
@@ -144,12 +139,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        liveWeather = new LiveWeather(weatherForecastBundle, timedUtcTimeProvider);
-        liveWeatherViewModel = new LiveWeatherViewModel(liveWeather);
-
         locationTextView.setText(weatherForecastBundle.getLocationName());
 
-        binding.setLiveWeather(new LiveWeatherViewModel(liveWeather));
+        binding.setLiveWeather(new LiveWeatherViewModel(new LiveWeather(weatherForecastBundle, timedUtcTimeProvider)));
         binding.setForecastBundle(new WeatherForecastBundleViewModel(weatherForecastBundle));
         binding.setForecastLayoutId(R.layout.item_weather);
         binding.setForecastLayoutVariableId(BR.forecast);
@@ -183,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
             if (weatherForecast.canGetTemperatureAt(timedUtcTimeProvider.getCurrentTimeInSeconds())) {
                 currentTimeTextView.setText(getCurrentTime(timedUtcTimeProvider));
                 dateTextView.setText(getCurrentDay());
-                //temperatureTextView.setText(String.valueOf(liveWeather.getCurrentTemperatureInCelsius()) + "°C");
                 break;
             }
         }
