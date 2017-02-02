@@ -1,8 +1,9 @@
 package ca.csf.mobile2.tp2.meteo;
 
+import java.util.Iterator;
 import java.util.List;
 
-public class WeatherForecastBundle {
+public class WeatherForecastBundle implements Iterable<WeatherForecast> {
 
     private final String locationName;
     private final List<WeatherForecast> weatherForecasts;
@@ -20,27 +21,32 @@ public class WeatherForecastBundle {
         return locationName;
     }
 
-    public List<WeatherForecast> getWeatherForecasts() {
-        return weatherForecasts;
+    public WeatherForecast get(int index) {
+        return weatherForecasts.get(index);
     }
 
-    public int getTemperatureAt(long utcTime) {
-        WeatherForecast weatherForecast = getWeatherForecastFor(utcTime);
-        return weatherForecast == null ? 0 : weatherForecast.getTemperatureAt(utcTime);
+    public int getTemperatureAt(long timeInSeconds) {
+        WeatherForecast weatherForecast = getWeatherForecastFor(timeInSeconds);
+        return weatherForecast == null ? 0 : weatherForecast.getTemperatureAt(timeInSeconds);
     }
 
-    public WeatherType getWeatherTypeAt(long utcTime) {
-        WeatherForecast weatherForecast = getWeatherForecastFor(utcTime);
+    public WeatherType getWeatherTypeAt(long timeInSeconds) {
+        WeatherForecast weatherForecast = getWeatherForecastFor(timeInSeconds);
         return weatherForecast == null ? null : weatherForecast.getWeather();
     }
 
-    private WeatherForecast getWeatherForecastFor(long utcTime) {
+    private WeatherForecast getWeatherForecastFor(long timeInSeconds) {
         for (WeatherForecast weatherForecast : weatherForecasts) {
-            if (weatherForecast.canGetTemperatureAt(utcTime)) {
+            if (weatherForecast.canGetTemperatureAt(timeInSeconds)) {
                 return weatherForecast;
             }
         }
         return null;
+    }
+
+    @Override
+    public Iterator<WeatherForecast> iterator() {
+        return weatherForecasts.iterator();
     }
 
 }

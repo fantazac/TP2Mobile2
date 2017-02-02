@@ -32,7 +32,7 @@
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@+id/temperatureMaxText"
             android:drawableStart="@drawable/ic_low_thermometer"
-            android:text="@{String.valueOf(forecast.getMinimumAndMaximumTemperaturesForDay()[0])}" />
+            android:text="@{String.valueOf(forecast.getMin())}" />
 
         <TextView
             android:id="@+id/temperatureMaxText"
@@ -41,7 +41,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:drawableStart="@drawable/ic_high_thermometer"
-            android:text="@{String.valueOf(forecast.getMinimumAndMaximumTemperaturesForDay()[1])}" />
+            android:text="@{String.valueOf(forecast.getMax())}" />
 
     </RelativeLayout>
 

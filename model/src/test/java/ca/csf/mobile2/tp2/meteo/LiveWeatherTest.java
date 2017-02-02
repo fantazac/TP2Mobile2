@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import ca.csf.mobile2.tp2.time.UtcTimeProvider;
+import ca.csf.mobile2.tp2.time.TimeProvider;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -16,22 +16,22 @@ import static org.mockito.Mockito.when;
 public class LiveWeatherTest {
 
     private WeatherForecastBundle weatherForecastBundle;
-    private UtcTimeProvider utcTimeProvider;
+    private TimeProvider timeProvider;
     private LiveWeather liveWeather;
 
     @Before
     public void before() {
-        utcTimeProvider = mock(UtcTimeProvider.class);
+        timeProvider = mock(TimeProvider.class);
         weatherForecastBundle = mock(WeatherForecastBundle.class);
 
-        liveWeather = new LiveWeather(weatherForecastBundle, utcTimeProvider);
+        liveWeather = new LiveWeather(weatherForecastBundle, timeProvider);
     }
 
     @Test
     public void canGetTemperatureAccordingToCurrentTime() {
         long currentTime = 60L;
         int currentTemperature = 22;
-        when(utcTimeProvider.getCurrentTimeInSeconds()).thenReturn(currentTime);
+        when(timeProvider.getCurrentTimeInSeconds()).thenReturn(currentTime);
         when(weatherForecastBundle.getTemperatureAt(currentTime)).thenReturn(currentTemperature);
 
         assertEquals(currentTemperature, liveWeather.getCurrentTemperatureInCelsius());
@@ -40,7 +40,7 @@ public class LiveWeatherTest {
     @Test
     public void canGetCurrentTime() {
         long currentTime = 22L;
-        when(utcTimeProvider.getCurrentTimeInSeconds()).thenReturn(currentTime);
+        when(timeProvider.getCurrentTimeInSeconds()).thenReturn(currentTime);
 
         assertEquals(currentTime, liveWeather.getCurrentTime());
     }
@@ -49,7 +49,7 @@ public class LiveWeatherTest {
     public void canGetCurrentWeatherType() {
         long currentTime = 22L;
         WeatherType currentWeatherType = WeatherType.SNOW;
-        when(utcTimeProvider.getCurrentTimeInSeconds()).thenReturn(currentTime);
+        when(timeProvider.getCurrentTimeInSeconds()).thenReturn(currentTime);
         when(weatherForecastBundle.getWeatherTypeAt(currentTime)).thenReturn(currentWeatherType);
 
         assertEquals(currentWeatherType, liveWeather.getCurrentWeatherType());
@@ -61,8 +61,8 @@ public class LiveWeatherTest {
 
         liveWeather.start(weatherListener);
 
-        verify(utcTimeProvider).addTimeListener(any(UtcTimeProvider.TimeListener.class));
-        verify(utcTimeProvider).start();
+        verify(timeProvider).addTimeListener(any(TimeProvider.TimeListener.class));
+        verify(timeProvider).start();
     }
 
     @Test
@@ -72,21 +72,21 @@ public class LiveWeatherTest {
         liveWeather.start(weatherListener);
         liveWeather.start(weatherListener);
 
-        verify(utcTimeProvider, times(1)).addTimeListener(any(UtcTimeProvider.TimeListener.class));
-        verify(utcTimeProvider, times(1)).start();
+        verify(timeProvider, times(1)).addTimeListener(any(TimeProvider.TimeListener.class));
+        verify(timeProvider, times(1)).start();
     }
 
     @Test
     public void canStopLiveWeatherTimeStream() {
         LiveWeather.WeatherListener weatherListener = mock(LiveWeather.WeatherListener.class);
         liveWeather.start(weatherListener);
-        ArgumentCaptor<UtcTimeProvider.TimeListener> timeListenerCaptor = ArgumentCaptor.forClass(UtcTimeProvider.TimeListener.class);
-        verify(utcTimeProvider).addTimeListener(timeListenerCaptor.capture());
+        ArgumentCaptor<TimeProvider.TimeListener> timeListenerCaptor = ArgumentCaptor.forClass(TimeProvider.TimeListener.class);
+        verify(timeProvider).addTimeListener(timeListenerCaptor.capture());
 
         liveWeather.stop();
 
-        verify(utcTimeProvider).removeTimeListener(timeListenerCaptor.getValue());
-        verify(utcTimeProvider).stop();
+        verify(timeProvider).removeTimeListener(timeListenerCaptor.getValue());
+        verify(timeProvider).stop();
     }
 
     @Test
@@ -94,19 +94,19 @@ public class LiveWeatherTest {
         liveWeather.stop();
         liveWeather.stop();
 
-        verify(utcTimeProvider, times(0)).addTimeListener(any(UtcTimeProvider.TimeListener.class));
-        verify(utcTimeProvider, times(0)).removeTimeListener(any(UtcTimeProvider.TimeListener.class));
-        verify(utcTimeProvider, times(0)).stop();
+        verify(timeProvider, times(0)).addTimeListener(any(TimeProvider.TimeListener.class));
+        verify(timeProvider, times(0)).removeTimeListener(any(TimeProvider.TimeListener.class));
+        verify(timeProvider, times(0)).stop();
     }
 
     @Test
     public void notifiesWeatherListenersWhenTimeChanges() {
         LiveWeather.WeatherListener weatherListener = mock(LiveWeather.WeatherListener.class);
-        ArgumentCaptor<UtcTimeProvider.TimeListener> timeListenerCaptor = ArgumentCaptor.forClass(UtcTimeProvider.TimeListener.class);
+        ArgumentCaptor<TimeProvider.TimeListener> timeListenerCaptor = ArgumentCaptor.forClass(TimeProvider.TimeListener.class);
 
         liveWeather.start(weatherListener);
-        verify(utcTimeProvider).addTimeListener(timeListenerCaptor.capture());
-        timeListenerCaptor.getValue().onTimeChanged(utcTimeProvider);
+        verify(timeProvider).addTimeListener(timeListenerCaptor.capture());
+        timeListenerCaptor.getValue().onTimeChanged(timeProvider);
 
         verify(weatherListener).onWeatherChanged(liveWeather);
     }

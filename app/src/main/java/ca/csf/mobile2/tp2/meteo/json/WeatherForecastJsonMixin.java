@@ -7,18 +7,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import ca.csf.mobile2.tp2.math.MathFunction;
 import ca.csf.mobile2.tp2.meteo.WeatherForecast;
 import ca.csf.mobile2.tp2.meteo.WeatherType;
-import ca.csf.mobile2.tp2.time.UtcDay;
+import ca.csf.mobile2.tp2.time.Day;
 
 public abstract class WeatherForecastJsonMixin extends WeatherForecast {
 
     @JsonCreator
-    public WeatherForecastJsonMixin(@JsonProperty("utcDay") UtcDay utcDay, @JsonProperty("weather") WeatherType weather, @JsonProperty("temperatureAccordingToUtcTimeFunction") MathFunction temperatureAccordingToUtcTimeFunction) {
-        super(utcDay, weather, temperatureAccordingToUtcTimeFunction);
+    public WeatherForecastJsonMixin(@JsonProperty("day") Day day,
+                                    @JsonProperty("weather") WeatherType weather,
+                                    @JsonProperty("temperatureAccordingToUtcTimeFunction") MathFunction temperatureAccordingToUtcTimeFunction) {
+        super(day, weather, temperatureAccordingToUtcTimeFunction);
     }
 
     @Override
-    @JsonProperty("utcDay")
-    public abstract UtcDay getUtcDay();
+    @JsonProperty("day")
+    public abstract Day getDay();
 
     @Override
     @JsonProperty("weather")
@@ -30,10 +32,10 @@ public abstract class WeatherForecastJsonMixin extends WeatherForecast {
 
     @Override
     @JsonIgnore
-    public abstract boolean canGetTemperatureAt(long utcTime);
+    public abstract boolean canGetTemperatureAt(long timeInSeconds);
 
     @Override
     @JsonIgnore
-    public abstract int getTemperatureAt(long utcTime);
+    public abstract int getTemperatureAt(long timeInSeconds);
 
 }

@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import ca.csf.mobile2.tp2.BR;
@@ -37,10 +38,10 @@ import ca.csf.mobile2.tp2.meteo.WeatherForecastBundle;
 import ca.csf.mobile2.tp2.meteo.WeatherType;
 import ca.csf.mobile2.tp2.meteo.json.WeatherForecastBundleJsonMixin;
 import ca.csf.mobile2.tp2.meteo.json.WeatherForecastJsonMixin;
+import ca.csf.mobile2.tp2.time.Day;
+import ca.csf.mobile2.tp2.time.DayJsonMixin;
+import ca.csf.mobile2.tp2.time.TimeProvider;
 import ca.csf.mobile2.tp2.time.TimedUtcTimeProvider;
-import ca.csf.mobile2.tp2.time.UtcDay;
-import ca.csf.mobile2.tp2.time.UtcDayJsonMixin;
-import ca.csf.mobile2.tp2.time.UtcTimeProvider;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -78,10 +79,12 @@ public class MainActivity extends AppCompatActivity {
         weatherTypes.add(WeatherType.RAIN);
         weatherTypes.add(WeatherType.SNOW);
 
+        weatherForecasts = new LinkedList<>();
+
         objectMapper = new ObjectMapper();
         objectMapper.addMixIn(WeatherForecastBundle.class, WeatherForecastBundleJsonMixin.class);
         objectMapper.addMixIn(WeatherForecast.class, WeatherForecastJsonMixin.class);
-        objectMapper.addMixIn(UtcDay.class, UtcDayJsonMixin.class);
+        objectMapper.addMixIn(Day.class, DayJsonMixin.class);
         objectMapper.addMixIn(MathFunction.class, MathFunctionJsonMixin.class);
         objectMapper.addMixIn(TrapezoidFunction.class, TrapezoidFunctionJsonMixin.class);
 
@@ -129,12 +132,15 @@ public class MainActivity extends AppCompatActivity {
     protected void setInterface() {
         ActivityMainBinding binding = ActivityMainBinding.bind(rootView);
 
-        weatherForecasts = weatherForecastBundle.getWeatherForecasts();
+        for (WeatherForecast weatherForecast : weatherForecastBundle) {
+            weatherForecasts.add(weatherForecast);
+        }
+
         timedUtcTimeProvider = new TimedUtcTimeProvider(new Handler(), MILLIS_DELAY);
         timedUtcTimeProvider.start();
-        timedUtcTimeProvider.addTimeListener(new UtcTimeProvider.TimeListener() {
+        timedUtcTimeProvider.addTimeListener(new TimeProvider.TimeListener() {
             @Override
-            public void onTimeChanged(UtcTimeProvider eventSource) {
+            public void onTimeChanged(TimeProvider eventSource) {
                 UpdateView();
             }
         });

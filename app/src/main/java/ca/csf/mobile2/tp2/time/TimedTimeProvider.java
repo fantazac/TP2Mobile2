@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TimedUtcTimeProvider implements TimeProvider {
+public class TimedTimeProvider implements TimeProvider {
 
     private final Handler timeHandler;
     private final long delayInMillisBetweenUpdates;
@@ -19,7 +19,7 @@ public class TimedUtcTimeProvider implements TimeProvider {
 
     private boolean isRunning;
 
-    public TimedUtcTimeProvider(Handler timeHandler, long delayInMillisBetweenUpdates) {
+    public TimedTimeProvider(Handler timeHandler, long delayInMillisBetweenUpdates) {
         this.timeHandler = timeHandler;
         this.delayInMillisBetweenUpdates = delayInMillisBetweenUpdates;
         timeListeners = new LinkedList<>();
@@ -52,7 +52,7 @@ public class TimedUtcTimeProvider implements TimeProvider {
     @Override
     public void addTimeListener(TimeListener timeListener) {
         timeListeners.add(timeListener);
-}
+    }
 
     @Override
     public void removeTimeListener(TimeListener timeListener) {
@@ -80,7 +80,9 @@ public class TimedUtcTimeProvider implements TimeProvider {
     private class TimeHandlerListener implements Runnable {
 
         @Override
-        public void run() { TimedUtcTimeProvider.this.onTimeChanged(); }
+        public void run() {
+            TimedTimeProvider.this.onTimeChanged();
+        }
     }
     //END Remove this when DataBinding will be supported by Jack and Java 8 is enabled
 

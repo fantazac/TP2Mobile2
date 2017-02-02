@@ -6,9 +6,7 @@ import org.junit.Test;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +39,18 @@ public class WeatherForecastBundleTest {
 
     @Test
     public void canGetWeatherForecasts() {
-        assertSame(weatherForecasts, weatherForecastBundle.getWeatherForecasts());
+        for (int i = 0; i < weatherForecasts.size(); i++) {
+            assertSame(weatherForecasts.get(i), weatherForecastBundle.get(i));
+        }
+    }
+
+    @Test
+    public void canIterateOverWeatherForecastBundle() {
+        int i = 0;
+        for (WeatherForecast weatherForecast : weatherForecasts) {
+            assertSame(weatherForecasts.get(i), weatherForecast);
+            i++;
+        }
     }
 
     @Test

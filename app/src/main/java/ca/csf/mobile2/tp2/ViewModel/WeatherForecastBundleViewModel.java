@@ -12,8 +12,8 @@ public class WeatherForecastBundleViewModel extends DatabindableViewModelList<We
     public WeatherForecastBundleViewModel(WeatherForecastBundle weatherForecastBundle) {
         this.weatherForecastBundle = weatherForecastBundle;
 
-        for(WeatherForecast forecast : this.weatherForecastBundle.getWeatherForecasts()) {
-            addModelItem(forecast);
+        for (WeatherForecast weatherForecast : weatherForecastBundle) {
+            addModelItem(weatherForecast);
         }
     }
 

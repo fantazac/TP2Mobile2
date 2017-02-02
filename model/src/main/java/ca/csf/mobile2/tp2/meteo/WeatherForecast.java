@@ -1,24 +1,24 @@
 package ca.csf.mobile2.tp2.meteo;
 
 import ca.csf.mobile2.tp2.math.MathFunction;
-import ca.csf.mobile2.tp2.time.UtcDay;
+import ca.csf.mobile2.tp2.time.Day;
 
 public class WeatherForecast {
 
-    private final UtcDay utcDay;
+    private final Day day;
     private final WeatherType weather;
     private final MathFunction temperatureAccordingToUtcTimeFunction;
 
-    public WeatherForecast(UtcDay utcDay,
+    public WeatherForecast(Day day,
                            WeatherType weather,
                            MathFunction temperatureAccordingToUtcTimeFunction) {
-        this.utcDay = utcDay;
+        this.day = day;
         this.weather = weather;
         this.temperatureAccordingToUtcTimeFunction = temperatureAccordingToUtcTimeFunction;
     }
 
-    public UtcDay getUtcDay() {
-        return utcDay;
+    public Day getDay() {
+        return day;
     }
 
     public WeatherType getWeather() {
@@ -29,12 +29,12 @@ public class WeatherForecast {
         return temperatureAccordingToUtcTimeFunction;
     }
 
-    public boolean canGetTemperatureAt(long utcTime) {
-        return utcDay.isOfTheSameDay(utcTime);
+    public boolean canGetTemperatureAt(long timeInSeconds) {
+        return day.isOfTheSameDay(timeInSeconds);
     }
 
-    public int getTemperatureAt(long utcTime) {
-        return (int) temperatureAccordingToUtcTimeFunction.getValue(utcTime);
+    public int getTemperatureAt(long timeInSeconds) {
+        return (int) temperatureAccordingToUtcTimeFunction.getValue(timeInSeconds);
     }
 
 }

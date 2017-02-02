@@ -78,7 +78,7 @@ public class TimedUtcTimeProviderTest {
 
     @Test
     public void canAddTimeListener() {
-        UtcTimeProvider.TimeListener timeListener = mock(UtcTimeProvider.TimeListener.class);
+        TimeProvider.TimeListener timeListener = mock(TimeProvider.TimeListener.class);
 
         timedUtcTimeProvider.addTimeListener(timeListener);
 
@@ -91,8 +91,8 @@ public class TimedUtcTimeProviderTest {
 
     @Test
     public void canRemoveTimeListener() {
-        UtcTimeProvider.TimeListener timeListener1 = mock(UtcTimeProvider.TimeListener.class);
-        UtcTimeProvider.TimeListener timeListener2 = mock(UtcTimeProvider.TimeListener.class);
+        TimeProvider.TimeListener timeListener1 = mock(TimeProvider.TimeListener.class);
+        TimeProvider.TimeListener timeListener2 = mock(TimeProvider.TimeListener.class);
         timedUtcTimeProvider.addTimeListener(timeListener1);
         timedUtcTimeProvider.addTimeListener(timeListener2);
 
@@ -108,8 +108,8 @@ public class TimedUtcTimeProviderTest {
 
     @Test
     public void notifiesAllTimeListenersAtTimeInterval() {
-        UtcTimeProvider.TimeListener timeListener1 = mock(UtcTimeProvider.TimeListener.class);
-        UtcTimeProvider.TimeListener timeListener2 = mock(UtcTimeProvider.TimeListener.class);
+        TimeProvider.TimeListener timeListener1 = mock(TimeProvider.TimeListener.class);
+        TimeProvider.TimeListener timeListener2 = mock(TimeProvider.TimeListener.class);
         timedUtcTimeProvider.addTimeListener(timeListener1);
         timedUtcTimeProvider.addTimeListener(timeListener2);
         ArgumentCaptor<Runnable> runnableCaptor = ArgumentCaptor.forClass(Runnable.class);

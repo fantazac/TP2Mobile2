@@ -6,7 +6,7 @@ import retrofit2.http.GET;
 
 public interface WeatherForecastBundleRepository {
 
-    @GET("/weather/random/now.json")
+    @GET("/weather/now.json")
     Call<WeatherForecastBundle> retrieve();
 
 }

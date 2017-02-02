@@ -20,7 +20,6 @@ public class TrapezoidFunction implements MathFunction {
 
     @Override
     public long getValue(long value) {
-
         long variation = maxValue - minValue;
 
         if (value < xStartMin) {

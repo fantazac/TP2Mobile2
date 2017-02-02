@@ -1,6 +1,6 @@
 package ca.csf.mobile2.tp2.time;
 
-public interface UtcTimeProvider {
+public interface TimeProvider {
 
     long getCurrentTimeInSeconds();
 
@@ -13,7 +13,7 @@ public interface UtcTimeProvider {
     void removeTimeListener(TimeListener timeListener);
 
     interface TimeListener {
-        void onTimeChanged(UtcTimeProvider eventSource);
+        void onTimeChanged(TimeProvider eventSource);
     }
 
 }

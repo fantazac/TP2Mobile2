@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Weather</string>
     <string name="current_weather">Current Weather</string>
-    <string name="url">https://weatherfake-acodebreak.rhcloud.com</string>
+    <string name="url">http://weatherfakev2-acodebreak.rhcloud.com/</string>
 </resources>

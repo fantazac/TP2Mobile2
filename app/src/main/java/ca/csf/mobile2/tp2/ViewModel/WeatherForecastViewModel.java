@@ -13,7 +13,7 @@ import ca.csf.mobile2.tp2.R;
 import ca.csf.mobile2.tp2.math.MathFunction;
 import ca.csf.mobile2.tp2.meteo.WeatherForecast;
 import ca.csf.mobile2.tp2.meteo.WeatherType;
-import ca.csf.mobile2.tp2.time.UtcDay;
+import ca.csf.mobile2.tp2.time.Day;
 
 public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForecast> {
 
@@ -26,8 +26,8 @@ public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForec
     }
 
     @Bindable
-    public UtcDay getUtcDay() {
-        return weatherForecast.getUtcDay();
+    public Day getUtcDay() {
+        return weatherForecast.getDay();
     }
 
     @Bindable
@@ -35,30 +35,18 @@ public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForec
         return weatherForecast.getWeather();
     }
 
-    public int[] getMinimumAndMaximumTemperaturesForDay(){
-        int minimum = 100;
-        int maximum = -100;
+    @Bindable
+    public int getMin() {
+        return (int)weatherForecast.getTemperatureAccordingToUtcTimeFunction().getMinValue();
+    }
 
-        int temperatureAtUtcTime;
-
-        long utcTimeAtMidnight = weatherForecast.getUtcDay().getUtcDayTime();
-
-        for(int i = 0; i < 24; i++){
-            temperatureAtUtcTime = weatherForecast.getTemperatureAt(utcTimeAtMidnight + i * 3600);
-            if(temperatureAtUtcTime > maximum){
-                maximum = temperatureAtUtcTime;
-            }
-            if(temperatureAtUtcTime < minimum){
-                minimum = temperatureAtUtcTime;
-            }
-        }
-
-        return new int[]{minimum, maximum};
-
+    @Bindable
+    public int getMax() {
+        return (int)weatherForecast.getTemperatureAccordingToUtcTimeFunction().getMaxValue();
     }
 
     public Date getDate() {
-        return new Date(getUtcDay().getUtcDayTime() * SECONDS_TO_MILLIS);
+        return new Date(getUtcDay().getTimeInSeconds() * SECONDS_TO_MILLIS);
     }
 
     public String getDayOfTheWeek(Date date) {

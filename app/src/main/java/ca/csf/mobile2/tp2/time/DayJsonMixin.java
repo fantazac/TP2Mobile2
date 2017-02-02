@@ -4,18 +4,23 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public abstract class UtcDayJsonMixin extends UtcDay {
+public abstract class DayJsonMixin extends Day {
 
     @JsonCreator
-    public UtcDayJsonMixin(@JsonProperty("utcDayTime") long utcTime) {
-        super(utcTime);
+    public DayJsonMixin(@JsonProperty("timeAsString") String timeAsString) {
+        super(timeAsString);
     }
 
     @Override
-    @JsonProperty("utcDayTime")
-    public abstract long getUtcDayTime();
+    @JsonProperty("timeAsString")
+    public abstract String getTimeAsString();
+
+    @Override
+    @JsonIgnore
+    public abstract long getTimeInSeconds();
 
     @Override
     @JsonIgnore
     public abstract boolean isOfTheSameDay(long utcTime);
+
 }
