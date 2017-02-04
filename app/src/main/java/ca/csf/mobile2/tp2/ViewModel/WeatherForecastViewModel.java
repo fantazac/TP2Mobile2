@@ -15,6 +15,7 @@ import ca.csf.mobile2.tp2.meteo.WeatherForecast;
 import ca.csf.mobile2.tp2.meteo.WeatherType;
 import ca.csf.mobile2.tp2.time.Day;
 
+//BEN_REVIEW : Autant il y a plein d'erreurs de DataBinding dans "MainActivty", autant ici c'est correct.
 public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForecast> {
 
     private static final int SECONDS_TO_MILLIS = 1000;
@@ -51,6 +52,8 @@ public class WeatherForecastViewModel extends DatabindableViewModel<WeatherForec
 
     public String getDayOfTheWeek(Date date) {
         date = new Date(date.getTime() - Calendar.getInstance().getTimeZone().getOffset(Calendar.getInstance().getTimeInMillis()));
+        //BEN_REVIEW : Si c'est jaune, c'est un warning.
+        //BEN_CORRECTION : De plus, constante...
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE");
         String dayOfTheWeek = simpleDateFormat.format(date);
         return dayOfTheWeek.substring(0, 1).toUpperCase() + dayOfTheWeek.substring(1);

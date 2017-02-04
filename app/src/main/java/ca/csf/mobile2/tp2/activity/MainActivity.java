@@ -40,6 +40,7 @@ import ca.csf.mobile2.tp2.meteo.json.WeatherForecastBundleJsonMixin;
 import ca.csf.mobile2.tp2.meteo.json.WeatherForecastJsonMixin;
 import ca.csf.mobile2.tp2.time.Day;
 import ca.csf.mobile2.tp2.time.DayJsonMixin;
+import ca.csf.mobile2.tp2.time.FasterTimeProvider;
 import ca.csf.mobile2.tp2.time.TimeProvider;
 import ca.csf.mobile2.tp2.time.TimedUtcTimeProvider;
 import retrofit2.Call;
@@ -53,17 +54,23 @@ public class MainActivity extends AppCompatActivity {
     public static final int SECONDS_TO_MILLIS = 1000;
     protected static final int MILLIS_DELAY = 1000;
 
+    //BEN_CORRECTION : Pourquoi ce n'est pas juste une variable locale à la méthode "onCreate". Est-ce vraiment nécessaire que ce soit un attribut de classe ?
     protected ObjectMapper objectMapper;
 
-    protected TimedUtcTimeProvider timedUtcTimeProvider;
+    // BEN_REVIEW : De préférence, lorsque vous le pouvez, comme ici, utilisez le type de base (l'abstraction) et non pas le type concret.
+    //              Je l'ai modifiné pour vous montrer. Cela permet une plus grande souplesse.
+    protected TimeProvider timedUtcTimeProvider;
 
+    //BEN_CORRECTION: Inutile. Créé, mais jamais utilisé.
     private List<WeatherType> weatherTypes;
 
-    protected TextView locationTextView;
     protected View rootView;
+    //BEN_CORRECTION : Les 3 prochains ne devrait même pas être là vu que vous faites usage du DataBinding.
+    protected TextView locationTextView;
     protected TextView dateTextView;
     protected TextView currentTimeTextView;
 
+    //BEN_REVIWE : Inutile vu que vous avez déjà weatherForecastBundle.
     private List<WeatherForecast> weatherForecasts;
     private WeatherForecastBundle weatherForecastBundle;
 
@@ -120,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
 
                 //Handle error
+                //BEN_REVIEW : Une chance que je demandais pas de le faire...
             }
 
         } catch (IOException e) {
@@ -132,12 +140,16 @@ public class MainActivity extends AppCompatActivity {
     protected void setInterface() {
         ActivityMainBinding binding = ActivityMainBinding.bind(rootView);
 
+        //BEN_REVIEW : C'étais tu vraiment nécessaire ? Je crois pas...Me voir
         for (WeatherForecast weatherForecast : weatherForecastBundle) {
             weatherForecasts.add(weatherForecast);
         }
 
-        timedUtcTimeProvider = new TimedUtcTimeProvider(new Handler(), MILLIS_DELAY);
+        //BEN_INFO : Mis un time provider plus rapide pour tester.
+        timedUtcTimeProvider = new FasterTimeProvider(new Handler(), MILLIS_DELAY, 240);
         timedUtcTimeProvider.start();
+        //BEN_CORRECTION  : OH NON.....Je vois que vous n'avez vraiment pas saisi le but du DataBinding. Vous n'avez pas compris non plus comment fonctionne
+        //                  la couche Modèle que je vous ai donné. Si tel est le cas, pourquoi ne pas être venu me voir ? Je mord pas...
         timedUtcTimeProvider.addTimeListener(new TimeProvider.TimeListener() {
             @Override
             public void onTimeChanged(TimeProvider eventSource) {
@@ -145,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //BEN_CORRECTION : DataBinding non utilisé...ça sert justement à éviter cela!
         locationTextView.setText(weatherForecastBundle.getLocationName());
 
         binding.setLiveWeather(new LiveWeatherViewModel(new LiveWeather(weatherForecastBundle, timedUtcTimeProvider)));
@@ -155,7 +168,8 @@ public class MainActivity extends AppCompatActivity {
         UpdateView();
     }
 
-    public String getCurrentTime(TimedUtcTimeProvider timedUtcTimeProvider) {
+    //BEN_CORRECTION : Ça, ça devrait être dans la couche ViewModel, en plus d'être un BindingAdapter.
+    public String getCurrentTime(TimeProvider timedUtcTimeProvider) {
         Date date = new Date(timedUtcTimeProvider.getCurrentTimeInSeconds() * SECONDS_TO_MILLIS);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss", dateTextView.getTextLocale());
 
@@ -163,10 +177,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //BEN_CORRECTION : Idem.
     public String getCurrentDay() {
         Date date = new Date(Calendar.getInstance().getTimeInMillis());
         java.text.DateFormat dateFormat = DateFormat.getLongDateFormat(this);
 
+        //BEN_REVIEW : Vous avez passé du temps la dessus pour rien...C'étais pas demandé
         String restOfDate = dateFormat.format(date);
         int indexOfFirstLetterOfMonth = restOfDate.indexOf(' ') + 1;
         restOfDate = restOfDate.substring(0, indexOfFirstLetterOfMonth) +
@@ -179,7 +195,9 @@ public class MainActivity extends AppCompatActivity {
     private void UpdateView(){
         for (WeatherForecast weatherForecast : weatherForecasts) {
             if (weatherForecast.canGetTemperatureAt(timedUtcTimeProvider.getCurrentTimeInSeconds())) {
+                //BEN_CORRECTION : Euh....et le DataBinding ? Ça sert justement à ça!
                 currentTimeTextView.setText(getCurrentTime(timedUtcTimeProvider));
+                //BEN_CORRECTION : Idem.
                 dateTextView.setText(getCurrentDay());
                 break;
             }
